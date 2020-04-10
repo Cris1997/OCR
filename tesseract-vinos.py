@@ -5,40 +5,13 @@ import cv2
 from PIL import Image
 import tempfile
 import logging
+import os
+import nltk
 
 IMAGE_SIZE = 1800
 BINARY_THREHOLD = 180
 
 size = None
-#Funcion que aplica el OCR a la imagen en escala de grises
-def ocr_function(imagen,i):
-    text = pytesseract.image_to_string(imagen)
-    #print(type(text))
-    #print(text)
-    text_file = open( "resultados/" + i + ".txt", "w")
-    text_file.write(text)
-    text_file.close()
-    return text 
-
-#Convertir imagen RGB a escala de grises 1er metodo
-def gray_scale(imagen):
-    row,col,canal = imagen.shape
-    values_array = []
-    print(row,col,canal)
-    for i in range(row):
-        for j in range(col):
-            value = (imagen[i,j,0] * 0.07 + imagen[i,j,1] * 0.72 + imagen[i,j,2] * 0.21)
-            values_array.append(value)
-    image_gray = np.array(values_array)
-    return image_gray
-    #cv2.imwrite("tes2.png", image_gray.reshape(row,col))
-
-#Convertir imagen RGB a escala de grises 2o metodo
-def gray_scale_opencv(imagen, file):
-    gray = cv2.cvtColor(imagen, cv2.COLOR_RGB2GRAY)
-    cv2.imwrite("resultados/" + file, gray)
-    #return gray
-
 
 
 def get_size_of_scaled_image(im):
@@ -60,6 +33,7 @@ def process_image_for_ocr(file_path):
 def set_image_dpi(file_path):
     im = Image.open(file_path)
     # size = (1800, 1800)
+    im = im.convert('RGB')
     size = get_size_of_scaled_image(im)
     im_resized = im.resize(size, Image.ANTIALIAS)
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.jpg')
@@ -87,27 +61,56 @@ def remove_noise_and_smooth(file_name):
     or_image = cv2.bitwise_or(img, closing)
     return or_image
 
+
+#Funcion que aplica el OCR a la imagen en escala de grises
+def ocr_function(imagen,i):
+    text = pytesseract.image_to_string(imagen)
+    #print(type(text))
+    #print(text)
+    text_file = open( "resultados/" + i + ".txt", "w")
+    text_file.write(text)
+    text_file.close()
+    return text 
+
+#Convertir imagen RGB a escala de grises 2o metodo
+def gray_scale_opencv(imagen, file):
+    gray = cv2.cvtColor(imagen, cv2.COLOR_RGB2GRAY)
+    cv2.imwrite("resultados/" + file, gray)
+    #return gray
+
+
+
 if __name__ == "__main__":
     print("Pre-procesamiento de imágenes")
     import os    
     files = []
-    for file in os.listdir("menus"):
+    
+    for file in os.listdir("todos"):
         if not file.startswith("."):
             files.append(file)
-    
-    for file in files:
-        imagen  =  cv2.imread('menus/' + file)
+    #Convertir a escala de grises
+    for file in files:    
+        imagen  =  cv2.imread('todos/' + file) 
         gray_scale_opencv(imagen,file)
-        cadena = os.path.splitext(file)[0]
-        text = ocr_function("resultados/"+file,cadena)
-    print("Fin")
+    #Aplicar OCR
+    for file in files:
+       imagen  =  cv2.imread('resultados/' + file) 
+       text = ocr_function(imagen,file.split(".")[0])
+ 
 
-  # imagen = cv2.imread('menus/5-1.jpg')
-   #imagen = reducir_tamano(imagen)
-   #gray_scale_opencv(imagen)
-   #Eliminar ruido
-  # ocr_function("b5.png")
-  # imagen = process_image_for_ocr('menus/5-1.jpg')
-   #cv2.imwrite("b6.png", imagen)
-  # text = ocr_function("a5.png")
-   #print(type(imagen))
+
+
+
+
+#Convertir imagen RGB a escala de grises 1er metodo
+def gray_scale(imagen):
+    row,col,canal = imagen.shape
+    values_array = []
+    print(row,col,canal)
+    for i in range(row):
+        for j in range(col):
+            value = (imagen[i,j,0] * 0.07 + imagen[i,j,1] * 0.72 + imagen[i,j,2] * 0.21)
+            values_array.append(value)
+    image_gray = np.array(values_array)
+    return image_gray
+    #cv2.imwrite("tes2.png", image_gray.reshape(row,col))

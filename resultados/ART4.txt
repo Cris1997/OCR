@@ -1,0 +1,23 @@
+MENU DE VINOS
+
+Vinos Tintos Por copa Por Botella
+Santa Elena Carmenere (Valle Central) 70 450
+Cousifio Macul Cabernet Sauvignon (Valle de maipo) 80 300
+Orlandi Merlot - Cabernet Sauvignon (Querétaro) 90 450
+Casa Madero Shiraz (Parras de la fuente) 78 600
+Carnivor Cabernet Sauvignon (California) 86 750
+Yello Tail Shiraz (Australia) 75 450
+Las moras Malbec ( Valle San Juan) 60 280
+Monte Xanic Merlot (Valle de Guadalupe ) 80 560
+Los Haroldos Malbec ( Valle de Uco ) 50 300
+
+Vinos Blancos
+
+Monte Xanic Chardonnay (Valle de guadalupe) 85 850
+Casa Madero Chardonnay (Parras de la fuente) 95 950
+L.A Cetto Verano (Valle de Guadalupe) 75 500
+L.A Cetto Fume Blanc (Valle de Guadalupe) 75 600
+Reservado Sauvignon Blanc (Valle Central) 65 250
+Casillero del diablo Devils Collection white (Valle Central) 70 350
+
+L.A Cetto Chardonnay (Valle de Guadalupe) 60 350
