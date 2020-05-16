@@ -7,7 +7,7 @@ import tempfile
 import logging
 import os
 import nltk
-
+import time 
 IMAGE_SIZE = 1800
 BINARY_THREHOLD = 180
 
@@ -64,7 +64,11 @@ def remove_noise_and_smooth(file_name):
 
 #Funcion que aplica el OCR a la imagen en escala de grises
 def ocr_function(imagen,i):
+    start_time = time.time()
     text = pytesseract.image_to_string(imagen)
+    print(i)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
     #print(type(text))
     #print(text)
     text_file = open( "resultados/" + i + ".txt", "w")
@@ -89,9 +93,9 @@ if __name__ == "__main__":
         if not file.startswith("."):
             files.append(file)
     #Convertir a escala de grises
-    for file in files:    
-        imagen  =  cv2.imread('todos/' + file) 
-        gray_scale_opencv(imagen,file)
+    #for file in files:    
+     #   imagen  =  cv2.imread('todos/' + file) 
+      #  gray_scale_opencv(imagen,file)
     #Aplicar OCR
     for file in files:
        imagen  =  cv2.imread('resultados/' + file) 

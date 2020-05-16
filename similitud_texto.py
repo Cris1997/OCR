@@ -178,6 +178,7 @@ def encontrarVinos(texto_ocr):
     #Crear una lista para almecenar los identificadores de los vinos encontrados en la lista
     list_results = []
     for ventana in range(2,7):
+        #Crear oraciones de ventana palabras para comparar con el nombre de los vinos
         oraciones = formar_oraciones(lista_texto_OCR,ventana)
         for i in range(len(clean_data)):
             if(len(clean_data[i].split()) == ventana):
