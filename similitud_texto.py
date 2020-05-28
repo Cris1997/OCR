@@ -9,9 +9,9 @@ from nltk.tokenize.casual import TweetTokenizer
 from nltk.metrics.distance import edit_distance
 from nltk.corpus import stopwords
 import time 
-
+#Conjunto de palabras en espanol que no aportan un singnifado en una serie de texto
 stopwords =stopwords.words('spanish')
-
+#Lista con los nombres de todos los vinos que se encuentran en la base de datos 
 nombresVino = ["Reservado Cabernet Sauvignon",
     "Reservado Merlot", 
     "Reservado Carmenere",
@@ -114,14 +114,15 @@ nombresVino = ["Reservado Cabernet Sauvignon",
     "Beringer White Zinfandel",
     "Carnivor Cabernet Sauvignon",
     ]
-
+#Funcion para limpiar todas las cadenas (eliminar stopwords, mayusculas, y eliminar signos de puntuacion)
 def clean_string(text):
     text = ''.join([word for word in text if word not in string.punctuation])
     text = text.lower()
     text = ' '.join([word for word in text.split() if word not in stopwords])
     return text
-
+#Formación de oraciones para realizar la comparacion entre ellas y encontrar vinos
 def formar_oraciones(texto_ocr,ventana):
+    #Ventana es la cantidad de palabras que forman una oracion
     ventana_real = ventana - 1
     oracion = []
     oraciones = []
@@ -129,21 +130,9 @@ def formar_oraciones(texto_ocr,ventana):
         oracion = []
         oracion.append(texto_ocr[i:i+ ventana])
         oraciones.append(oracion)
-
     return oraciones
 
-def similitud_Levenshtein_prueba(oracion,nombreVino):
-    scores = []
-    l = [ item for elem in oracion for item in elem]
-    for i in range(len(nombreVino)):
-        for j in range(len(l)):
-            distancia = edit_distance(nombreVino[i], l[j])
-            score = 1 - (distancia/max(len(l[j]),len(nombreVino[i])))
-            if(score > 0.8):
-                scores.append(score)
-    return sum(scores)/len(nombreVino)
- 
-
+#Funcion que encuentra la edit distance y el porcentaj de similitud de las oraciones con los nombres de los vinos
 def similitud_Levenshtein(oracion,nombreVino):
     scores = []
     distancias = []
@@ -160,12 +149,6 @@ def similitud_Levenshtein(oracion,nombreVino):
             distancias.append(distancia)
        # print(sum(scores) * 100)
         return sum(scores)/len(l)
-       # if(sum(scores)/len(l) > 0.8):
-        #    print(nombreVino)
-         #   print(l)
-          #  print(sum(scores)/len(l))
-           # return sum(scores)/len(l)
-            #print(distancias)
 
 def encontrarVinos(texto_ocr):
     #Lista para los datos de los vinos limpios
@@ -186,61 +169,11 @@ def encontrarVinos(texto_ocr):
                     score = similitud_Levenshtein(oracion,clean_data[i].split())
                     if(score > 0.80):
                         list_results.append(i+1)
+    #Lista de los identificadores de los vinos que se encontraronn en el texto
     return list_results
 
 
-def funcion_principal():      
-    #texto_ocr es el texto que obtuvo el OCR Tesseract
-    texto_ocr = open("resultados/ART5.txt").read()
-    #Lista para los datos de los vinos limpios
-    clean_data = []
-    #Limpiar el texto que se obtuvo del OCR (quitar stopwords, puntuación, y mayúsculas)
-    lista_texto_OCR = clean_string(texto_ocr).split()
-    #Limpiar todos los elementos de la lista de vinos
-    for vino in nombresVino:
-        clean_data.append(clean_string(vino))
 
-    #print(lista_texto_OCR)
-    #print(len(clean_data[0].split()))
-    #lista_prueba = ["cab","cetto","reseruad","sauignon","blamc","egrr","weee","ssss","ddd","ssss"]
-    dict_results = {}
-    for ventana in range(2,7):
-    # print("Ventana de ",ventana)
-        oraciones = formar_oraciones(lista_texto_OCR,ventana)
-        for i in range(len(clean_data)):
-            if(len(clean_data[i].split()) == ventana):
-                for oracion in oraciones:
-                    score = similitud_Levenshtein(oracion,clean_data[i].split())
-                    if(score > 0.80):
-                        dict_results[i + 1] = clean_data[i]
-                        #print(oracion)
-                        #print(clean_data[i])
-                        #print(score)
-    #print(dict_results)     
-
-
-#tiempo_inicial = time() 
-
-#tiempo_final = time() 
-#tiempo_ejecucion = tiempo_final - tiempo_inicial
-#print ('El tiempo de ejecucion fue:',tiempo_ejecucion) #En segundos
-#start_time = time.time()
-#funcion_principal()
-#print("--- %s seconds ---" % (time.time() - start_time))
-#Prueba de edit distance
-#s1 = ["reservado", "merlot"]
-#s2 = ["reseuado", "merlott"]
-#ponderacion_palabra = 1 / len(s1)
-#scores = []
-#print(ponderacion_palabra)
-#for i in range(len(s1)):
-#    distancia =  edit_distance(s1[i], s2[i])
-    #print(distancia)
- #   score = 1 - (distancia/max(len(s1[i]),len(s2[i]))) ;
-  #  score  = score * ponderacion_palabra
-   # scores.append(score)
-
-#print(sum(scores) * 100)
 
 
 
